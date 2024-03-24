@@ -6,6 +6,11 @@ bindkey -v
 #bindkey -s jj '\e'
 bindkey jj vi-cmd-mode
 
+export EDITOR=nvim
+
+export NNN_COLORS="2136"                           # use a different color for each context
+
+
 zstyle :compinstall filename '$HOME/.zshrc'
 
 autoload -Uz compinit
@@ -30,8 +35,10 @@ COOL_GREEN="#15F5BA"
 
 PROMPT='%F{#61A9D8}░▒▓ %f$(set_prompt_username)%F{red}${vcs_info_msg_0_}%f%F{#FB7E14}%Bλ%b%f '
 
-alias ls="ls --color=auto"
+alias ls='ls --color=auto'
 alias ll='exa --long --git --group --classify --all'
 alias l='exa --long --git --group --classify'
+alias vim='nvim --noplugin'
+alias battery='cat /sys/class/power_supply/BAT0/capacity'
 
 eval "$(zoxide init --cmd cd zsh)"
