@@ -1,0 +1,73 @@
+
+*{
+  font-family: SpaceMono Nerd Font;
+  font-weight: bold;
+}
+
+window{
+  background-color: #252525;
+  border-radius: 6px;
+  opacity: 0.94;
+  filter: blur(4px);
+}
+
+#input {
+  margin: 5px;
+  border-radius: 0px;
+  border: none;
+  border-bottom: 3px solid grey;
+  background-color: #383C4A;
+  color: white;
+  font-size: 1.2em;
+}
+
+/* search icon */
+#input:first-child > :nth-child(1) {
+  min-height: 1.2em;
+  min-width: 1.2em;
+  background-image: -gtk-icontheme('open-menu-symbolic');
+}
+
+/* clear icon */
+#input:first-child > :nth-child(4){
+  min-height: 0.8em;
+  min-width: 0.8em;
+  background-image: -gtk-icontheme('window-close-symbolic');
+  border-radius: 6px;
+}
+
+#inner-box {
+  background-color: #383C4A;
+  border-radius: 6px;
+  padding: 5px;
+}
+
+#outer-box {
+  margin: 2px;
+  padding:0px;
+  background-color: #383C4A;
+  border-radius: 6px;
+}
+
+#text {
+  padding: 5px;
+  color: white;
+  font-size:1.2em;
+}
+
+#entry {
+  padding: 5px;
+}
+
+#entry:selected {
+  background-color: #5291e2;
+}
+
+#text:selected {
+}
+
+#scroll {
+}
+
+#img {
+}
