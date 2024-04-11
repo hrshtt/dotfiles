@@ -18,5 +18,5 @@ else
 
     sleep 2
 
-    firefox -P jupyter --kiosk "http://localhost:8888/lab" &
+    firefox --name "Firefox-JupyterLab" -P jupyter "http://localhost:8888/lab" &
 fi
