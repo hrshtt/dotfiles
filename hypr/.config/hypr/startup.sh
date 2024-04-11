@@ -10,6 +10,8 @@ wl-paste --type text --watch cliphist store & #Stores only text data
 
 wl-paste --type image --watch cliphist store & #Stores only image data 
 
+mpris-proxy &
+
 #mpvpaper -o "--loop" HDMI-A-1 $HOME/.config/wallpapers/neutron-star-desktop-wallpaperwaifu-com.mp4 &
 #mpvpaper -o "--loop" eDP-1 $HOME/.config/wallpapers/neutron-star-desktop-wallpaperwaifu-com.mp4 &
 
