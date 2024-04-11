@@ -1,0 +1,5 @@
+alias ls='ls --color=auto'
+alias ll='exa --long --git --group --classify --all'
+alias l='exa --long --git --group --classify'
+alias vim='nvim --noplugin'
+alias battery='cat /sys/class/power_supply/BAT0/capacity'
