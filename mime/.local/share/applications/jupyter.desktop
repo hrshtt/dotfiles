@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Jupyter Notebook
+Version=1.0
+Type=Application
+Comment=Interactive computational environment
+Exec=/home/<YOUR USERNAME>/.config/hypr/scripts/run_jupyter.sh %F
+Icon=/home/<YOUR USERNAME>/Code/.jpy-env/lib/python3.11/site-packages/jupyter_server/static/favicon.ico
+Terminal=false
+Categories=Development;Science;IDE;
+MimeType=application/x-ipynb+json;
