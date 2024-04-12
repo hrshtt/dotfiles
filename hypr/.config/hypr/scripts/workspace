@@ -1,0 +1,91 @@
+#!/bin/bash
+
+SECONDARY_SCREEN=1
+
+# Function to get the active monitor
+get_active_monitor() {
+  hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .id'
+}
+
+# Function to get the inactive monitor
+get_inactive_monitor() {
+  hyprctl monitors -j | jq -r '.[] | select(.focused == false) | .id'
+}
+
+# Function to switch the active monitor
+switch_active_monitor() {
+  active_monitor=$(get_active_monitor)
+  inactive_monitor=$(get_inactive_monitor)
+  hyprctl dispatch focusmonitor "$inactive_monitor"
+}
+
+# Function to switch to a workspace on the active monitor
+switch_workspace_active_monitor() {
+  active_monitor=$(get_active_monitor)
+  workspace=$1
+
+  if [[ $active_monitor == $SECONDARY_SCREEN ]]; then
+    workspace=$((workspace + 10))
+  fi
+
+  hyprctl dispatch workspace "$workspace"
+}
+
+# Function to switch to a workspace on the active monitor
+move_workspace_active_monitor() {
+  active_monitor=$(get_active_monitor)
+  workspace=$1
+
+  if [[ $active_monitor == $SECONDARY_SCREEN ]]; then
+    workspace=$((workspace + 10))
+  fi
+
+  hyprctl dispatch movetoworkspace "$workspace"
+}
+
+# Function to switch to a workspace on the inactive monitor
+switch_workspace_inactive_monitor() {
+  inactive_monitor=$(get_inactive_monitor)
+  workspace=$1
+
+  if [[ $inactive_monitor == $SECONDARY_SCREEN ]]; then
+    workspace=$((workspace + 10))
+  fi
+
+  hyprctl dispatch workspace "$workspace"
+  hyprctl dispatch focusmonitor "$inactive_monitor"
+}
+
+# Main script logic
+case $1 in
+  switch_monitor)
+    switch_active_monitor
+    ;;
+  workspace)
+    if [[ $2 -ge 0 && $2 -le 9 ]]; then
+      switch_workspace_active_monitor "$2"
+    else
+      echo "Invalid workspace number. Please use a number between 0 and 9."
+    fi
+    ;;
+  movetoworkspace)
+    if [[ $2 -ge 0 && $2 -le 9 ]]; then
+      move_workspace_active_monitor "$2"
+    else
+      echo "Invalid workspace number. Please use a number between 0 and 9."
+    fi
+    ;;
+  switch_workspace_inactive)
+    if [[ $2 -ge 0 && $2 -le 9 ]]; then
+      switch_workspace_inactive_monitor "$2"
+    else
+      echo "Invalid workspace number. Please use a number between 0 and 9."
+    fi
+    ;;
+  *)
+    echo "Usage: $0 [switch_monitor|workspace|movetoworkspace|switch_workspace_inactive] [workspace_number]"
+    exit 1
+    ;;
+esac
+
+exit 0
