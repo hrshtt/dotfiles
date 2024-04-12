@@ -8,7 +8,13 @@ M.general = {
     explorer = {
         toggle = '<leader>ee',
         focus = '<leader>e',
-    }
+    },
+    plugins = {
+        update = '<leader>lu',
+    },
 }
+
+-- Add the keybinding for manual plugin updates
+vim.keymap.set("n", M.general.plugins.update, "<cmd>Lazy update<cr>", { desc = "Update plugins" })
 
 return M

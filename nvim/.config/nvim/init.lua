@@ -1,6 +1,8 @@
 -- Equivalent settings in init.lua
 
 vim.g.mapleader = " "
+-- vim.o.timeoutlen = 300
+-- vim.o.showcmd = true
 vim.o.nocompatible = true  -- disable compatibility to old-time vi
 vim.o.showmatch = true     -- show matching 
 vim.o.ignorecase = true    -- case insensitive 
