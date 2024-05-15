@@ -62,21 +62,21 @@ case $1 in
     switch_active_monitor
     ;;
   workspace)
-    if [[ $2 -ge 0 && $2 -le 9 ]]; then
+    if [[ $2 -ge 1 && $2 -le 10 ]]; then
       switch_workspace_active_monitor "$2"
     else
       echo "Invalid workspace number. Please use a number between 0 and 9."
     fi
     ;;
   movetoworkspace)
-    if [[ $2 -ge 0 && $2 -le 9 ]]; then
+    if [[ $2 -ge 1 && $2 -le 10 ]]; then
       move_workspace_active_monitor "$2"
     else
       echo "Invalid workspace number. Please use a number between 0 and 9."
     fi
     ;;
   switch_workspace_inactive)
-    if [[ $2 -ge 0 && $2 -le 9 ]]; then
+    if [[ $2 -ge 1 && $2 -le 10 ]]; then
       switch_workspace_inactive_monitor "$2"
     else
       echo "Invalid workspace number. Please use a number between 0 and 9."

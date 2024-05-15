@@ -4,7 +4,7 @@
 folder_path="$HOME/Videos/"
 
 # Find the latest mp4 or mkv file in the folder
-latest_file=$(ls -t "$folder_path"/*.mkv 2>/dev/null | head -n 1)
+latest_file=$(ls -t "$folder_path"/**/*.mkv 2>/dev/null | head -n 1)
 
 # Check if a file was found
 if [[ -n "$latest_file" ]]; then
