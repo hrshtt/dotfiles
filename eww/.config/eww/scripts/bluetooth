@@ -1,0 +1,81 @@
+#!/bin/bash
+
+show_status() {
+    if bluetoothctl show | grep -q "Powered: yes"; then
+        echo "enabled"
+    else
+        echo "disabled"
+    fi
+}
+
+toggle_status() {
+    current_status=$(show_status)
+    if [ "$current_status" = "enabled" ]; then
+        bluetoothctl power off
+        echo "disabled"
+    else
+        bluetoothctl power on
+        echo "enabled"
+    fi
+}
+
+list_devices() {
+    devices=$(bluetoothctl devices)
+    json_output="["
+    first=true
+    
+    while IFS= read -r line; do
+        if [ "$first" = true ]; then
+            first=false
+        else
+            json_output+=","
+        fi
+        
+        mac=$(echo "$line" | awk '{print $2}')
+        name=$(echo "$line" | cut -d' ' -f3-)
+        if bluetoothctl info "$mac" | grep -q "Connected: yes"; then
+            connected=true
+        else
+            connected=false
+        fi
+        
+        json_output+="{\"mac\":\"$mac\",\"name\":\"$name\",\"connected\":$connected}"
+    done <<< "$devices"
+    
+    json_output+="]"
+    echo "$json_output" | jq '.'
+}
+
+toggle_device() {
+    mac="$1"
+    if bluetoothctl info "$mac" | grep -q "Connected: yes"; then
+        bluetoothctl disconnect "$mac"
+        echo "disconnected"
+    else
+        bluetoothctl connect "$mac"
+        echo "connected"
+    fi
+}
+
+case "$1" in
+    status)
+        show_status
+        ;;
+    toggle)
+        toggle_status
+        ;;
+    list)
+        list_devices
+        ;;
+    connect)
+        if [ -z "$2" ]; then
+            echo "Error: MAC address required"
+            exit 1
+        fi
+        toggle_device "$2"
+        ;;
+    *)
+        echo "Usage: $0 {status|toggle|list|connect MAC}"
+        exit 1
+        ;;
+esac

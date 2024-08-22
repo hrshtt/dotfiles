@@ -1,0 +1,60 @@
+#!/bin/bash
+
+show_status() {
+    if nmcli radio wifi | grep -q "enabled"; then
+        echo "enabled"
+    else
+        echo "disabled"
+    fi
+}
+
+toggle_status() {
+    current_status=$(show_status)
+    if [ "$current_status" = "enabled" ]; then
+        nmcli radio wifi off
+        echo "disabled"
+    else
+        nmcli radio wifi on
+        echo "enabled"
+    fi
+}
+
+list_networks() {
+    nmcli -t -f SSID,SIGNAL,IN-USE device wifi list | jq -R -s -c 'split("\n")[:-1] | map(split(":")) | map({"ssid": .[0], "signal": .[1], "connected": (.[2] == "*")})' 
+}
+
+toggle_network() {
+    ssid="$1"
+    connection_status=$(nmcli -t -f SSID,IN-USE device wifi list | grep "^$ssid:" | cut -d':' -f2)
+    
+    if [ "$connection_status" = "*" ]; then
+        nmcli connection down "$ssid"
+        echo "disconnected"
+    else
+        nmcli device wifi connect "$ssid"
+        echo "connected"
+    fi
+}
+
+case "$1" in
+    status)
+        show_status
+        ;;
+    toggle)
+        toggle_status
+        ;;
+    list)
+        list_networks
+        ;;
+    connect)
+        if [ -z "$2" ]; then
+            echo "Error: SSID required"
+            exit 1
+        fi
+        toggle_network "$2"
+        ;;
+    *)
+        echo "Usage: $0 {status|toggle|list|connect SSID}"
+        exit 1
+        ;;
+esac

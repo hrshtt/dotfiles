@@ -1,0 +1,48 @@
+* {
+  all: unset;
+}
+
+.bar {
+  background-color: rgba(#1e1e2e, .40);
+  font-family: "JetBrainsMono Nerd Font";
+  padding: 2px 0;
+  margin: 0 8px;
+}
+
+.workspaces-widget {
+}
+
+.workspace-entry {
+  padding: 3px 6px;
+  margin: 0 0;
+}
+
+.current {
+  background-color: #89b4fa;
+  color: #ffffff;
+  border-radius: 2px;
+  font-weight: 800;
+}
+
+.occupied {
+  color: #a6e3a1;
+  font-weight: 600;
+}
+
+.empty {
+  color: #6c7086;
+}
+
+.window-title {
+  border-radius: 6px;
+  font-weight: bold;
+  //padding: 3px 10px;
+}
+
+.metric {
+  font-family: "SpaceMono Nerd Font";
+  //font-family: "ProggyCleanSZ Nerd Font Mono";
+  font-size: 16;
+  padding: 0 4px;
+  font-weight: 600;
+}
