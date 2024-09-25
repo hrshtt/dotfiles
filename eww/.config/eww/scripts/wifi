@@ -1,4 +1,14 @@
 #!/bin/bash
+icon_name() {
+    status=$(show_status)
+    if nmcli -t -f TYPE,STATE device | grep -q "^ethernet:connected"; then
+        echo "network-wired-symbolic"
+    elif [ "$status" = "enabled" ]; then
+        echo "network-wireless-signal-excellent-symbolic"
+    else
+        echo "network-wireless-disabled-symbolic"
+    fi
+}
 
 show_status() {
     if nmcli radio wifi | grep -q "enabled"; then
@@ -20,7 +30,7 @@ toggle_status() {
 }
 
 list_networks() {
-    nmcli -t -f SSID,SIGNAL,IN-USE device wifi list | jq -R -s -c 'split("\n")[:-1] | map(split(":")) | map({"ssid": .[0], "signal": .[1], "connected": (.[2] == "*")})' 
+    nmcli -t -f SSID,SIGNAL,IN-USE device wifi list | jq -R -s -c 'split("\n")[:-1] | map(split(":")) | map({"name": .[0], "signal": .[1], "connected": (.[2] == "*")})' 
 }
 
 toggle_network() {
@@ -45,6 +55,9 @@ case "$1" in
         ;;
     list)
         list_networks
+        ;;
+    icon)
+        icon_name
         ;;
     connect)
         if [ -z "$2" ]; then

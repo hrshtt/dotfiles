@@ -1,22 +1,28 @@
 #!/bin/bash
+
 battery_dir=$(find /sys/class/power_supply -name "BAT*" | head -n 1)
-if [ -z "$battery_dir" ]; then
-    echo "No battery found"
-    exit 1
-fi
-battery_percent=$(cat "$battery_dir/capacity")
-charging_status=$(cat "$battery_dir/status")
-if [ "$charging_status" = "Charging" ]; then
-    icon="⚡"
-    class="charging"
-elif [ "$battery_percent" -le 20 ]; then
-    icon="🔋"
-    class="critical"
-elif [ "$battery_percent" -le 40 ]; then
-    icon="🔋"
-    class="warning"
+capacity=$(cat "$battery_dir/capacity")
+status=$(cat "$battery_dir/status")
+
+# Generate icon string based on battery level and charging status
+if [ "$status" = "Charging" ]; then
+    if [ "$capacity" -eq 100 ]; then
+        icon="battery-level-100-charged-symbolic"
+    else
+        level=$((($capacity + 9) / 10 * 10))
+        icon="battery-level-${level}-charging-symbolic"
+    fi
+elif [ "$status" = "Full" ]; then
+    icon="battery-full-symbolic"
 else
-    icon="🔋"
-    class=""
+    if [ "$capacity" -eq 100 ]; then
+        icon="battery-level-100-charged-symbolic"
+    else
+        level=$((($capacity + 9) / 10 * 10))
+        icon="battery-level-${level}-symbolic"
+    fi
 fi
-echo "{\"text\":\"${icon} ${battery_percent}%\", \"class\":\"${class}\"}"
+
+# Echo the icon name
+echo "$icon"
+

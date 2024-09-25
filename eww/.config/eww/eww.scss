@@ -9,8 +9,7 @@
   margin: 0 8px;
 }
 
-.workspaces-widget {
-}
+.workspaces-widget {}
 
 .workspace-entry {
   padding: 3px 6px;
@@ -24,12 +23,12 @@
   font-weight: 800;
 }
 
-.occupied {
+.active {
   color: #a6e3a1;
   font-weight: 600;
 }
 
-.empty {
+.inactive {
   color: #6c7086;
 }
 
@@ -45,4 +44,103 @@
   font-size: 16;
   padding: 0 4px;
   font-weight: 600;
+}
+
+.metric image {
+  margin-right: 4px;
+}
+
+.popup-menu {
+  background-color: rgba(#1e1e2e, .90);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.popup-menu button {
+  padding: 5px 10px;
+  margin: 2px 0;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.popup-menu button:hover {
+  background-color: rgba(#89b4fa, .20);
+}
+
+.popup-menu button:first-child {
+  background-color: #89b4fa;
+  color: #ffffff;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.power-menu {
+  margin-left: 8px;
+}
+
+.power-icon {
+  padding: 0 8px;
+  color: #cba6f7;
+}
+
+.power-button {
+  padding: 0 8px;
+  color: #f38ba8;
+  transition: all 0.2s ease-in-out;
+}
+
+.power-button:hover {
+  background-color: rgba(243, 139, 168, 0.2);
+  border-radius: 4px;
+}
+
+.github-contributions {
+  background-color: rgba(30, 30, 46, 0.85); // Semi-transparent background
+  border-radius: 10px;
+  padding: 20px 30px;
+  // min-width: 200px;
+  color: #cdd6f4;
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .calendar-scroll {
+    margin-bottom: 10px;
+  }
+
+  .calendar {
+    .week {
+      margin-right: 3px;
+    }
+
+    .day {
+      min-width: 12px;
+      min-height: 12px;
+      border-radius: 2px;
+      margin-bottom: 3px;
+    }
+  }
+
+  .total {
+    font-size: 14px;
+  }
+
+}
+
+// Add this general tooltip styling outside of any specific widget
+tooltip {
+  background-color: rgba(30, 30, 46, 0.85); // Semi-transparent background
+  border-radius: 6px;
+  padding: 6px 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+tooltip label {
+  color: #cdd6f4; // Light text color for better contrast
+  font-weight: bold;
+  font-size: 12px;
 }

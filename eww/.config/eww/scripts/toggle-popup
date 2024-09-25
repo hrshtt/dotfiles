@@ -1,0 +1,21 @@
+#!/bin/bash
+
+LOCKFILE="/tmp/eww-popup.lock"
+POPUP_NAME="$1"
+
+if [[ ! -f "$LOCKFILE" ]]; then
+    touch "$LOCKFILE"
+    echo "$POPUP_NAME" > "$LOCKFILE"
+    eww open "$POPUP_NAME-popup"
+    # Start the focus monitor if it's not already running
+    pgrep -f "monitor-focus" || ~/.config/eww/scripts/monitor-focus &
+elif [[ "$(cat $LOCKFILE)" != "$POPUP_NAME" ]]; then
+    echo "$POPUP_NAME" > "$LOCKFILE"
+    eww close "$(cat $LOCKFILE)-popup"
+    eww open "$POPUP_NAME-popup"
+else
+    eww close "$POPUP_NAME-popup"
+    rm "$LOCKFILE"
+    # Kill the focus monitor if no popups are open
+    pkill -f "monitor-focus"
+fi

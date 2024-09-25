@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+LOCKFILE="/tmp/eww-popup.lock"
+
+close_popup() {
+    if [[ -f "$LOCKFILE" ]]; then
+        POPUP_NAME="$(cat $LOCKFILE)"
+        eww close "$POPUP_NAME-popup"
+        rm "$LOCKFILE"
+    fi
+}
+
+socat -u UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | while read -r line; do
+    case $line in
+        focusedmon*)
+            close_popup
+            ;;
+        activewindow*)
+            # Check if the new active window is not our popup
+            if [[ ! "$line" =~ "eww-popup" ]]; then
+                close_popup
+            fi
+            ;;
+    esac
+done

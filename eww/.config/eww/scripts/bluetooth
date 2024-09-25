@@ -1,5 +1,14 @@
 #!/bin/bash
 
+icon_name() {
+    status=$(show_status)
+    if [ "$status" = "enabled" ]; then
+        echo "bluetooth-active-symbolic"
+    else
+        echo "bluetooth-disabled-symbolic"
+    fi
+}
+
 show_status() {
     if bluetoothctl show | grep -q "Powered: yes"; then
         echo "enabled"
@@ -66,6 +75,9 @@ case "$1" in
         ;;
     list)
         list_devices
+        ;;
+    icon)
+        icon_name
         ;;
     connect)
         if [ -z "$2" ]; then

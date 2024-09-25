@@ -1,9 +1,30 @@
 (defpoll time :interval "1s" "date '+%H:%M'")
 (defpoll date :interval "1m" "date '+%b %d'")
+(defpoll bluetooth_status :interval "1s" "~/.config/eww/scripts/bluetooth status")
+(defpoll wifi_status :interval "1s" "~/.config/eww/scripts/wifi status")
+(defpoll wifi_icon :interval "1s" "~/.config/eww/scripts/wifi icon")
+
+(defpoll battery :interval "1s" "~/.config/eww/scripts/battery.sh")
+(defpoll github_contribs :interval "1h" :initial "{}" "~/.config/eww/scripts/github_contribs")
 
 (deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
 (deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace")
 (deflisten window_title :initial "..." "sh ~/.config/eww/scripts/get-window-title")
+
+(defwidget bluetooth []
+  (button :onclick "~/.config/eww/scripts/toggle-popup bluetooth"
+    (box :class "metric ${bluetooth_status == "enabled" ? "active" : "inactive"}"
+      (image :icon "bluetooth-active-symbolic"))))
+
+(defwidget wifi []
+  (button :onclick "~/.config/eww/scripts/toggle-popup wifi"
+    (box :class "metric ${wifi_status == "enabled" ? "active" : "inactive"}"
+      (image :icon wifi_icon))))
+
+(defwidget battery []
+  (box :class "metric"
+    :space-evenly false
+    (image :icon battery)))
 
 (defwidget bar []
   (centerbox :orientation "h"
@@ -13,21 +34,26 @@
 
 (defwidget sidestuff []
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
+    (wifi)
+    (bluetooth)
+    (battery)
     (metric :label date)
-    (metric :label time)))
+    (metric :label time)
+    (power)))
 
 (defwidget workspaces []
   (eventbox :onscroll "bash ~/.config/eww/scripts/change-active-workspace {} ${current_workspace}" :class "workspaces-widget"
     (box :space-evenly false
       (for workspace in workspaces
         (eventbox :onclick "hyprctl dispatch workspace ${workspace.id}"
-          (box :class "workspace-entry ${workspace.id == current_workspace ? "current" : workspace.windows > 0 ? "occupied" : "empty"}"
+          (box :class "workspace-entry ${workspace.id == current_workspace ? "current" : workspace.windows > 0 ? "active" : "inactive"}"
             (label :text "${workspace.id}")
           )
         )
       )
     )
   )
+  
 )
 
 (defwidget window_w []
@@ -38,17 +64,123 @@
 
 (defwidget metric [label]
   (box :orientation "h"
-       :class "metric"
-       :space-evenly false
+    :class "metric"
+    :space-evenly false
     (box :class "label" label)))
 
 (defwindow bar
   :monitor 0
   :windowtype "dock"
   :geometry (geometry :x "0%"
-                      :y "0%"
-                      :width "100%"
-                      :height "30px"
-                      :anchor "top center")
+    :y "0%"
+    :width "100%"
+    :height "30px"
+  :anchor "top center")
   :exclusive true
   (bar))
+
+(defwidget popup-menu [name toggle-var toggle-action items-var connect-action]
+  (box :class "popup-menu" :orientation "vertical"
+    (button :onclick toggle-action
+      (box :space-evenly false
+        (label :text "Toggle ${name}")
+        (label :text {toggle-var ? "On" : "Off"})))
+    (for item in items-var
+      (button :onclick "${connect-action} '${item.mac ?: item.name}'"
+        (box :space-evenly false
+          (label :text "${item.name}")
+          (label :text {item.connected ? "Connected" : "Disconnected"}))))))
+
+(defwidget bluetooth-menu []
+  (popup-menu :name "Bluetooth"
+    :toggle-var bluetooth-enabled
+    :toggle-action "scripts/bluetooth toggle"
+    :items-var bluetooth-devices
+  :connect-action "scripts/bluetooth connect"))
+
+(defwidget wifi-menu []
+  (popup-menu :name "Wi-Fi"
+    :toggle-var wifi-enabled
+    :toggle-action "scripts/wifi toggle"
+    :items-var wifi-networks
+  :connect-action "scripts/wifi connect"))
+
+(defpoll bluetooth-enabled :interval "1s" "scripts/bluetooth status")
+(defpoll bluetooth-devices :interval "1s" "scripts/bluetooth list")
+(defpoll wifi-enabled :interval "1s" "scripts/wifi status")
+(defpoll wifi-networks :interval "1s" "scripts/wifi list")
+
+(defwindow bluetooth-popup
+  :monitor 0
+  :geometry (geometry :x "0%"
+    :y "0%"
+    :width "20%"
+    :height "20%"
+  :anchor "top right")
+  :focusable true
+  (bluetooth-menu))
+
+(defwindow wifi-popup
+  :monitor 0
+  :geometry (geometry :x "0%"
+    :y "0%"
+    :width "20%"
+    :height "20%"
+  :anchor "top right")
+  :focusable true
+  (wifi-menu))
+
+(defvar power false)
+
+(defwidget power []
+  (eventbox :onhover "${EWW_CMD} update power=true"
+    :onhoverlost "${EWW_CMD} update power=false"
+    (box :orientation "h"
+      :space-evenly false
+      :class "power-menu"
+      (button :class "power-icon"
+        :onclick "${EWW_CMD} update power=true"
+        (image :icon "system-shutdown-symbolic"))
+      (revealer :transition "slideleft"
+        :reveal power
+        :duration "300ms"
+        (box :orientation "h"
+          :space-evenly false
+          (button :class "power-button"
+            :tooltip "Log Out"
+            (image :icon "system-log-out-symbolic"))
+          (button :class "power-button"
+            :tooltip "Reboot"
+            :onclick "reboot"
+            (image :icon "system-reboot-symbolic"))
+          (button :class "power-button"
+            :tooltip "Shutdown"
+            :onclick "shutdown now"
+            (image :icon "system-shutdown-symbolic")))))))
+
+(defwidget github_contributions []
+  (box :class "github-contributions" :orientation "v" :space-evenly false :vexpand true :hexpand false :halign "center" :valign "center"
+    (label :text "You can just do things" :class "title")
+    (scroll :hscroll false :vscroll false :class "calendar-scroll"
+      (box :class "calendar" :orientation "h" :space-evenly false :halign "center"
+        (for week in {github_contribs.data.user.contributionsCollection.contributionCalendar.weeks ?: []}
+          (box :class "week" :orientation "v" :space-evenly false
+            (for day in {week.contributionDays ?: []}
+              (box :class "day"
+                :style "background-color: ${day.color ?: '#ebedf0'};"
+              :tooltip "${day.date}: ${day.contributionCount} contribution${day.contributionCount == 1 ? '' : 's'}")))))
+    )
+    (label :text "Number GO UP: ${github_contribs.data.user.contributionsCollection.contributionCalendar.totalContributions ?: 0} Total" :class "total"))
+)
+
+(defwindow github_contributions_window
+  :monitor 0
+  :geometry (geometry :x "0%"
+    :y "0%"
+    :width "100%"
+    :height "100%"
+  :anchor "center")
+  :stacking "fg"
+  :windowtype "normal"
+  :wm-ignore false
+  (github_contributions))
