@@ -8,12 +8,18 @@ MONITOR_MAX=90
 TOGGLE_LOW=5
 TOGGLE_HIGH=90
 
+# Function to check if monitor is connected
+is_monitor_connected() {
+    ddcutil detect --bus 2 > /dev/null 2>&1
+    return $?
+}
+
 # Function to get current brightness
 get_brightness() {
     local device=$1
     if [ "$device" = "laptop" ]; then
         brightnessctl g
-    elif [ "$device" = "monitor" ]; then
+    elif [ "$device" = "monitor" ] && is_monitor_connected; then
         ddcutil getvcp 10 --bus 2 | grep -oP 'current value =\s*\K[0-9]+'
     fi
 }
@@ -23,8 +29,8 @@ set_brightness() {
     local device=$1
     local value=$2
     if [ "$device" = "laptop" ]; then
-        brightnessctl -q s "$value"  # Removed the % sign
-    elif [ "$device" = "monitor" ]; then
+        brightnessctl -q s "$value"
+    elif [ "$device" = "monitor" ] && is_monitor_connected; then
         ddcutil setvcp 10 "$value" --bus 2
     fi
 }
@@ -36,6 +42,10 @@ adjust_brightness() {
     local amount=$3
     local current=$(get_brightness "$device")
     local new
+
+    if [ -z "$current" ]; then
+        return
+    fi
 
     if [ "$direction" = "inc" ]; then
         new=$((current + amount))
@@ -58,6 +68,10 @@ toggle_brightness() {
     local current=$(get_brightness "$device")
     local new
 
+    if [ -z "$current" ]; then
+        return
+    fi
+
     if [ "$current" -le "$TOGGLE_LOW" ]; then
         new=$TOGGLE_HIGH
     else
@@ -78,7 +92,9 @@ case $1 in
             inc|dec)
                 if [ "$device" = "both" ]; then
                     adjust_brightness "laptop" "$action" "$amount"
-                    adjust_brightness "monitor" "$action" "$amount"
+                    if is_monitor_connected; then
+                        adjust_brightness "monitor" "$action" "$amount"
+                    fi
                 else
                     adjust_brightness "$device" "$action" "$amount"
                 fi
@@ -87,12 +103,16 @@ case $1 in
                 if [ "$device" = "both" ]; then
                     laptop_current=$(get_brightness "laptop")
                     monitor_current=$(get_brightness "monitor")
-                    if [ "$laptop_current" -le "$TOGGLE_LOW" ] || [ "$monitor_current" -le "$TOGGLE_LOW" ]; then
+                    if [ "$laptop_current" -le "$TOGGLE_LOW" ] || ([ -n "$monitor_current" ] && [ "$monitor_current" -le "$TOGGLE_LOW" ]); then
                         set_brightness "laptop" "$TOGGLE_HIGH"
-                        set_brightness "monitor" "$TOGGLE_HIGH"
+                        if is_monitor_connected; then
+                            set_brightness "monitor" "$TOGGLE_HIGH"
+                        fi
                     else
                         set_brightness "laptop" "$TOGGLE_LOW"
-                        set_brightness "monitor" "$TOGGLE_LOW"
+                        if is_monitor_connected; then
+                            set_brightness "monitor" "$TOGGLE_LOW"
+                        fi
                     fi
                 else
                     toggle_brightness "$device"
