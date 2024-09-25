@@ -10,7 +10,6 @@ export EDITOR=nvim
 
 export NNN_COLORS="2136"                           # use a different color for each context
 
-
 zstyle :compinstall filename '$HOME/.zshrc'
 
 autoload -Uz compinit
@@ -39,3 +38,11 @@ source $HOME/.aliases
 source $HOME/.private-zshrc
 
 eval "$(zoxide init --cmd cd zsh)"
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
