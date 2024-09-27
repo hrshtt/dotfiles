@@ -1,0 +1,6 @@
+(defpoll battery :interval "1s" "bar/system-info/scripts/battery")
+
+(defwidget battery []
+  (box :class "metric"
+    :space-evenly false
+    (image :icon battery)))

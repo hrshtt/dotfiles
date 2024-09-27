@@ -1,0 +1,57 @@
+// Styles for battery, bluetooth, wifi, power, and popup-menu components
+.metric {
+    font-family: "SpaceMono Nerd Font";
+    font-size: 16;
+    padding: 0 4px;
+    font-weight: 600;
+}
+
+.metric image {
+    margin-right: 4px;
+}
+
+.popup-menu {
+    background-color: rgba(#1e1e2e, .90);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.popup-menu button {
+    padding: 5px 10px;
+    margin: 2px 0;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.popup-menu button:hover {
+    background-color: rgba(#89b4fa, .20);
+}
+
+.popup-menu button:first-child {
+    background-color: #89b4fa;
+    color: #ffffff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.power-menu {
+    margin-left: 8px;
+}
+
+.power-icon {
+    padding: 0 8px;
+    color: #cba6f7;
+}
+
+.power-button {
+    padding: 0 8px;
+    color: #f38ba8;
+    transition: all 0.2s ease-in-out;
+}
+
+.power-button:hover {
+    background-color: rgba(243, 139, 168, 0.2);
+    border-radius: 4px;
+}
+
+// ... (add other specific styles for system-info components)

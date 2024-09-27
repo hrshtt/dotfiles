@@ -1,0 +1,27 @@
+(include "bar/system-info/popup-menu.yuck")
+
+(defpoll wifi-icon :interval "1s" "bar/system-info/scripts/wifi icon")
+(defpoll wifi-status :interval "1s" "bar/system-info/scripts/wifi status")
+(defpoll wifi-networks :interval "1s" "bar/system-info/scripts/wifi list")
+
+(defwidget wifi-menu []
+  (popup-menu :name "Wi-Fi"
+    :toggle-var wifi-status
+    :toggle-action "bar/system-info/scripts/wifi toggle"
+    :items-var wifi-networks
+  :connect-action "bar/system-info/scripts/wifi connect"))
+
+(defwidget wifi []
+  (button :onclick "bar/system-info/scripts/toggle-popup wifi"
+    (box :class "metric ${wifi-status == "enabled" ? "active" : "inactive"}"
+      (image :icon wifi-icon))))
+
+(defwindow wifi-popup
+  :monitor 0
+  :geometry (geometry :x "0%"
+    :y "0%"
+    :width "20%"
+    :height "20%"
+  :anchor "top right")
+  :focusable true
+  (wifi-menu))

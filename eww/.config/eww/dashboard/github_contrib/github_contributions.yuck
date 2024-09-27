@@ -1,0 +1,21 @@
+(defpoll github_contribs :interval "15m" :initial "{}" "~/.config/eww/scripts/github_contribs")
+
+(defwidget github_contributions []
+  (box :class "github-contributions" :orientation "v" :space-evenly false :vexpand true :hexpand false :halign "center" :valign "center"
+    (box :orientation "h" :space-evenly false :halign "fill"
+      (label :text "You can just do things" :class "title" :hexpand true)
+      ; (button :class "refresh-button"
+        ;   :onclick "eww update github_contributions_window"
+        ;   (image :icon "view-refresh-symbolic"))
+    )
+    (scroll :hscroll false :vscroll false :class "calendar-scroll"
+      (box :class "calendar" :orientation "h" :space-evenly false :halign "center"
+        (for week in {github_contribs.data.user.contributionsCollection.contributionCalendar.weeks ?: []}
+          (box :class "week" :orientation "v" :space-evenly false
+            (for day in {week.contributionDays ?: []}
+              (box :class "day"
+                :style "background-color: ${day.color ?: '#ebedf0'};"
+              :tooltip "${day.date}: ${day.contributionCount} contribution${day.contributionCount == 1 ? '' : 's'}")))))
+    )
+    (label :text "Number GO UP: ${github_contribs.data.user.contributionsCollection.contributionCalendar.totalContributions ?: 0} Total" :class "total"))
+)

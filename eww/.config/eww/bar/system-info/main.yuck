@@ -1,0 +1,22 @@
+(include "bar/system-info/bluetooth.yuck")
+(include "bar/system-info/battery.yuck")
+(include "bar/system-info/wifi.yuck")
+(include "bar/system-info/power.yuck")
+
+(defpoll time :interval "1s" "date '+%H:%M'")
+(defpoll date :interval "1m" "date '+%b %d'")
+
+(defwidget metric [label]
+  (box :orientation "h"
+    :class "metric"
+    :space-evenly false
+    (box :class "label" label)))
+
+(defwidget system_info []
+  (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
+    (wifi)
+    (bluetooth)
+    (battery)
+    (metric :label date)
+    (metric :label time)
+    (power)))

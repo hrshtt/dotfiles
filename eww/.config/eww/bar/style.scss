@@ -1,0 +1,11 @@
+@import "./bar/system-info/style";
+@import "./bar/workspace-n-titles/style";
+
+.bar {
+    background-color: rgba(#1e1e2e, .40);
+    font-family: "JetBrainsMono Nerd Font";
+    padding: 2px 0;
+    margin: 0 8px;
+}
+
+// ... (add other styles specific to the bar window)

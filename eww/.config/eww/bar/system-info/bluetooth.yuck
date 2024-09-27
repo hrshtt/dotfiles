@@ -1,0 +1,26 @@
+(include "bar/system-info/popup-menu.yuck")
+
+(defpoll bluetooth-devices :interval "1s" "bar/system-info/scripts/bluetooth list")
+(defpoll bluetooth-status :interval "1s" "bar/system-info/scripts/bluetooth status")
+
+(defwidget bluetooth []
+  (button :onclick "bar/system-info/scripts/toggle-popup bluetooth"
+    (box :class "metric ${bluetooth-status == "enabled" ? "active" : "inactive"}"
+      (image :icon "bluetooth-active-symbolic"))))
+
+(defwidget bluetooth-menu []
+  (popup-menu :name "Bluetooth"
+    :toggle-var bluetooth-status
+    :toggle-action "bar/system-info/scripts/bluetooth toggle"
+    :items-var bluetooth-devices
+  :connect-action "bar/system-info/scripts/bluetooth connect"))
+
+(defwindow bluetooth-popup
+  :monitor 0
+  :geometry (geometry :x "0%"
+    :y "0%"
+    :width "20%"
+    :height "20%"
+  :anchor "top right")
+  :focusable true
+  (bluetooth-menu))

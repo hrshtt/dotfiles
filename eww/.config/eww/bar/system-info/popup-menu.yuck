@@ -1,0 +1,11 @@
+(defwidget popup-menu [name toggle-var toggle-action items-var connect-action]
+  (box :class "popup-menu" :orientation "vertical"
+    (button :onclick toggle-action
+      (box :space-evenly false
+        (label :text "Toggle ${name}")
+        (label :text {toggle-var ? "On" : "Off"})))
+    (for item in items-var
+      (button :onclick "${connect-action} '${item.mac ?: item.name}'"
+        (box :space-evenly false
+          (label :text "${item.name}")
+          (label :text {item.connected ? "Connected" : "Disconnected"}))))))
