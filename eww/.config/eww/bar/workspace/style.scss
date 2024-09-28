@@ -1,0 +1,30 @@
+.workspaces-widget {}
+
+.workspace-entry {
+    padding: 3px 6px;
+    margin: 0 0;
+}
+
+.current {
+    background-color: #89b4fa;
+    color: #ffffff;
+    border-radius: 2px;
+    font-weight: 800;
+}
+
+.active {
+    color: #a6e3a1;
+    font-weight: 600;
+}
+
+.inactive {
+    color: #6c7086;
+}
+
+.window-title {
+    border-radius: 6px;
+    font-weight: bold;
+    //padding: 3px 10px;
+}
+
+// ... (add other specific styles for workspace and window title components)
