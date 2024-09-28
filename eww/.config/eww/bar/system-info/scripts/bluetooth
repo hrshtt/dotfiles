@@ -66,6 +66,38 @@ toggle_device() {
     fi
 }
 
+get_connected_device_mac() {
+    connected_device=$(bluetoothctl info | grep "Device" | awk '{print $2}')
+    if [ -n "$connected_device" ]; then
+        echo "$connected_device"
+    else
+        echo "No device connected"
+    fi
+}
+
+get_battery_percentage() {
+    mac="$1"
+    if [ -z "$mac" ]; then
+        mac=$(get_connected_device_mac)
+    fi
+    if [ "$mac" != "No device connected" ]; then
+        battery_info=$(bluetoothctl info "$mac" | grep "Battery Percentage")
+        if [ -n "$battery_info" ]; then
+            hex_value=$(echo "$battery_info" | awk '{print $3}')
+            # Convert hexadecimal to decimal
+            if [[ $hex_value == 0x* ]]; then
+                echo $((hex_value))
+            else
+                echo "$hex_value"
+            fi
+        else
+            echo "Battery information not available"
+        fi
+    else
+        echo "No device connected"
+    fi
+}
+
 case "$1" in
     status)
         show_status
@@ -86,8 +118,14 @@ case "$1" in
         fi
         toggle_device "$2"
         ;;
+    connected-device)
+        get_connected_device_mac
+        ;;
+    battery)
+        get_battery_percentage "$2"
+        ;;
     *)
-        echo "Usage: $0 {status|toggle|list|connect MAC}"
+        echo "Usage: $0 {status|toggle|list|connect MAC|connected-device|battery [MAC]}"
         exit 1
         ;;
 esac

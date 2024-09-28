@@ -2,6 +2,7 @@
 (include "bar/system-info/battery.yuck")
 (include "bar/system-info/wifi.yuck")
 (include "bar/system-info/power.yuck")
+(include "bar/system-info/volume.yuck")
 
 (defpoll time :interval "1s" "date '+%H:%M'")
 (defpoll date :interval "1m" "date '+%b %d'")
@@ -14,8 +15,9 @@
 
 (defwidget system_info []
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
-    (wifi)
+    (volume)
     (bluetooth)
+    (wifi)
     (battery)
     (metric :label date)
     (metric :label time)

@@ -1,14 +1,11 @@
 (defvar power false)
 
 (defwidget power []
-  (eventbox :onhover "${EWW_CMD} update power=true"
-    :onhoverlost "${EWW_CMD} update power=false"
+  (eventbox :onhover "eww update power=true"
+    :onhoverlost "eww update power=false"
     (box :orientation "h"
       :space-evenly false
       :class "power-menu"
-      (button :class "power-icon"
-        :onclick "${EWW_CMD} update power=true"
-        (image :icon "system-shutdown-symbolic"))
       (revealer :transition "slideleft"
         :reveal power
         :duration "300ms"
@@ -24,4 +21,7 @@
           (button :class "power-button"
             :tooltip "Shutdown"
             :onclick "shutdown now"
-            (image :icon "system-shutdown-symbolic")))))))
+            (image :icon "system-shutdown-symbolic"))))
+      (button :class "power-icon"
+        :onclick "eww update power=true"
+        (image :icon "system-shutdown-symbolic")))))

@@ -1,5 +1,5 @@
-(include "bar/workspace-n-titles/workspaces.yuck")
-(include "bar/workspace-n-titles/window-title.yuck")
+(include "bar/workspace/workspaces.yuck")
+(include "bar/title/window-title.yuck")
 (include "bar/system-info/main.yuck")
 
 (defwidget bar []

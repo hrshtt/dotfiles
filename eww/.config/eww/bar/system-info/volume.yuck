@@ -1,0 +1,29 @@
+(defpoll current-volume :interval "1s" "amixer sget Master | grep 'Left:' | awk -F'[][]' '{ print $2 }' | tr -d '%'")
+
+(defvar volume-expanded false)
+
+(defwidget volume []
+  (eventbox :onhover "eww update volume-expanded=true"
+    :onhoverlost "eww update volume-expanded=false"
+    (box :orientation "h"
+      :space-evenly false
+      :class "volume-menu"
+      (revealer :transition "slideleft"
+        :reveal volume-expanded
+        :duration "300ms"
+        (box :orientation "h"
+          :space-evenly true
+          (scale :class "volume-slider"
+            :value current-volume
+            :orientation "h"
+            :tooltip "Volume: ${current-volume}%"
+            :max 100
+            :min 0
+          :onchange "amixer sset Master {}%")))
+      (button :class "volume-icon"
+        :onclick "amixer set Master toggle"
+        (image :icon {current-volume == 0 ? "audio-volume-muted-rtl-symbolic" :
+          current-volume < 30 ? "audio-volume-low-rtl-symbolic" :
+          current-volume < 70 ? "audio-volume-medium-rtl-symbolic" :
+          current-volume <= 100 ? "audio-volume-high-rtl-symbolic" :
+        "audio-volume-overamplified-rtl-symbolic"})))))
