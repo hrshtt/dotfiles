@@ -3,10 +3,9 @@
 vim.g.mapleader = " "
 -- vim.o.timeoutlen = 300
 -- vim.o.showcmd = true
-vim.o.nocompatible = true  -- disable compatibility to old-time vi
 vim.o.showmatch = true     -- show matching 
 vim.o.ignorecase = true    -- case insensitive 
-vim.o.mouse = 'v'          -- middle-click paste with 
+vim.o.mouse = 'a'          -- enable mouse in all modes
 vim.o.hlsearch = true      -- highlight search 
 vim.o.incsearch = true     -- incremental search
 vim.o.tabstop = 4          -- number of columns occupied by a tab 
@@ -17,14 +16,16 @@ vim.o.autoindent = true    -- indent a new line the same amount as the line just
 vim.wo.number = true       -- add line numbers
 vim.wo.relativenumber = true -- add relative line numbers
 vim.o.wildmode = 'longest,list' -- get bash-like tab completions
-vim.cmd [[filetype plugin indent on]]  -- allow auto-indenting depending on file type
-vim.cmd [[syntax on]]                 -- syntax highlighting
-vim.o.mouse = 'a'                     -- enable mouse click
 vim.o.clipboard = 'unnamedplus'       -- using system clipboard
-vim.cmd [[filetype plugin on]]
 vim.o.ttyfast = true                  -- Speed up scrolling in Vim
 -- vim.o.spell = true                 -- enable spell check (may need to download language package)
 -- vim.o.swapfile = false             -- disable creating swap file
 -- vim.o.backupdir = '~/.cache/vim'   -- Directory to store backup files.
 
 require("config.lazy")
+
+-- Use vim.defer_fn for non-critical settings
+vim.defer_fn(function()
+    vim.cmd('filetype plugin indent on')
+    vim.cmd('syntax on')
+end, 0)
